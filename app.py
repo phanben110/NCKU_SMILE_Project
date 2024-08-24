@@ -13,6 +13,8 @@ from app_demo.src.footer import settingFooter
 import warnings
 warnings.filterwarnings("ignore")
 
+
+
 # Create an option menu for the main menu in the sidebar
 st.set_page_config(page_title="Semi-quantitative", page_icon="app_demo/image/Icon_chemitry.png", layout="wide")
 #st.set_page_config(page_title="Semi-quantitative", page_icon="app_demo/image/Icon_chemitry.png", layout="wide",  theme={"primaryColor": "#4CAF50"})
@@ -31,7 +33,9 @@ uploaded_file = st.sidebar.file_uploader("", type=["xlsx"], accept_multiple_file
 # settingFooter()
 
 if selected == "1. Upload Data":
-    upload_data(uploaded_file)     
+    upload_data(uploaded_file)   
+    if uploaded_file is not None:
+        manage_config()  
 elif selected == "2. Processing":
     processing(uploaded_file)
 elif selected == "3. Download Result":

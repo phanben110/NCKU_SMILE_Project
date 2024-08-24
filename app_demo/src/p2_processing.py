@@ -9,8 +9,9 @@ warnings.filterwarnings("ignore")
 def processing(file_name=None): 
     st.image("app_demo/image/2_processing.png")
     # Read the Excel file into a DataFrame
-    if file_name is not None: 
-        df = pd.read_excel(file_name) 
+    if file_name is not None:
+
+        df = pd.read_excel(file_name)
         # Check if the DataFrame is empty
         if df.empty:
             st.warning("The uploaded file is empty. Please upload a file with data.")
@@ -20,8 +21,9 @@ def processing(file_name=None):
         filtered_df.head()
         filtered_df = filtered_df.dropna() 
         st.subheader(" Filtered Data", divider='rainbow')
-        st.write(filtered_df , height=500, width=800)
+        st.dataframe(filtered_df, height=500, width=1500)
+
 
     elif file_name is None:
-        st.warning("Please upload a file with data.")
-        return
+        st.error("Please upload a data file to start processing.", icon="❌")
+

@@ -8,6 +8,7 @@ from rpy2.robjects.packages import importr
 from rpy2.robjects import r
 import pandas as pd
 import io
+import json
 import warnings
 warnings.filterwarnings("ignore") 
 
@@ -33,10 +34,10 @@ def calculate_similarity(smiles1, smiles2):
   return similarity[0]
 
 
-def download_result(file_name=None): 
+def download_result(file_name=None, ): 
     st.image("app_demo/image/3_download.png") 
     if file_name is not None: 
-        df = pd.read_excel(file_name) 
+        df = pd.read_excel(file_name)
         # Check if the DataFrame is empty
         if df.empty:
             st.warning("The uploaded file is empty. Please upload a file with data.")
@@ -48,14 +49,22 @@ def download_result(file_name=None):
 
         smiles_list = list(filtered_df["SMILES"]) 
 
-        target_smiles = [
-            "C(C(F)(F)F)(OC(C(F)(F)S(=O)(=O)O)(F)F)(F)F",
-                        "C(C(C(C(C(F)(F)Cl)(F)F)(F)F)(F)F)(C(C(C(OC(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(F)F)(F)F",
-                        "C(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(C(C(F)(F)F)(F)F)(F)F",
-                        "C(C(C(C(F)(F)Cl)(F)F)(F)F)(C(C(OC(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(F)F",
-                        "C(C(C(C(F)(F)F)(F)F)(F)F)(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F",
-                        "C(C(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(C(C(C(F)(F)F)(F)F)(F)F)(F)F"
-        ]
+        # target_smiles = [
+        #     "C(C(F)(F)F)(OC(C(F)(F)S(=O)(=O)O)(F)F)(F)F",
+        #                 "C(C(C(C(C(F)(F)Cl)(F)F)(F)F)(F)F)(C(C(C(OC(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(F)F)(F)F",
+        #                 "C(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(C(C(F)(F)F)(F)F)(F)F",
+        #                 "C(C(C(C(F)(F)Cl)(F)F)(F)F)(C(C(OC(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(F)F",
+        #                 "C(C(C(C(F)(F)F)(F)F)(F)F)(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F",
+        #                 "C(C(C(C(C(F)(F)S(=O)(=O)O)(F)F)(F)F)(F)F)(C(C(C(F)(F)F)(F)F)(F)F)(F)F"
+        # ]
+
+        with open('config.json', 'r') as file:
+            config = json.load(file)
+
+        # Extract specific values
+        IS_area = config.get('IS_area')
+        mean = config.get('mean')
+        target_smiles = config.get('target_smiles')
 
         # Tạo ma trận tương đồng
         similarity_matrix = np.zeros((len(smiles_list), len(target_smiles)))
@@ -84,8 +93,7 @@ def download_result(file_name=None):
         semi_quan['Area'] = filtered_df['Area'].values
     
         #Add RF concerntration column
-        IS_area = 62984
-        mean = [11.5710449,2.314978868,1.980552596,0.892092811,1.280020852,3.950444301]
+
         RF = []
         for i in range(len(semi_quan)):
             rfi = semi_quan['Area'].values[i]/(IS_area*mean[semi_quan['Best match'].values[i]-1])*40
@@ -108,10 +116,11 @@ def download_result(file_name=None):
             data_info = pd.concat([data_info, dfi], axis=0)
 
         #Save Data
-        st.subheader("Final result 1", divider='rainbow')
-        st.write(semi_quan) 
-        st.subheader("Final result 2", divider='rainbow')
-        st.write(data_info)
+        st.subheader("Sheet 1: Semi-quantitation", divider='rainbow')
+        st.dataframe(semi_quan, height=350, width=1500)
+        st.subheader("Sheet 2: Addition Output", divider='rainbow')
+        st.dataframe(data_info, height=350, width=1500)
+
         output_path = f'app_demo/output/{file_name.name.split(".xlsx")[0]}_output.xlsx'
         print(output_path)
         with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
@@ -133,10 +142,8 @@ def download_result(file_name=None):
             file_name= file_name.name.split(".xlsx")[0] + "_output.xlsx"
         )
    
-
     elif file_name is None:
-        st.warning("Please upload a file with data.")
-        return
+        st.error("Please upload a data file to start processing.", icon="❌")
 
 def convert_df(file_excel):
     # Read all sheets into a dictionary of DataFrames
