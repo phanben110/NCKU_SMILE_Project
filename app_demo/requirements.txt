@@ -3,4 +3,5 @@ matplotlib
 seaborn
 streamlit
 streamlit_option_menu
+rpy2==3.5.1
 

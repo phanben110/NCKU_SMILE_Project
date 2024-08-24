@@ -29,7 +29,7 @@ def settingFooter():
       }
       </style>
       <div class="custom-footer">
-          <p>Design by Phan Ben (潘班) ID: P76127051</p>
+          <p>Design by NCKU Student</p>
       </div>
       """,
       unsafe_allow_html=True

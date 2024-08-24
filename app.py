@@ -6,31 +6,34 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-from app_demo.src.p1_text_prompt import *
-from app_demo.src.p2_visual_prompt_engineer import *
-from app_demo.src.p3_visual_prompt import *
+from app_demo.src.p1_upload_data import *
+from app_demo.src.p2_processing import *
+from app_demo.src.p3_download_result import *
 from app_demo.src.footer import settingFooter
 import warnings
 warnings.filterwarnings("ignore")
 
 # Create an option menu for the main menu in the sidebar
-st.set_page_config(page_title="Final Project Advanced IIR", page_icon="app_demo/image/logo_csie2.png")
-# st.image("image/title_search.png")
+st.set_page_config(page_title="Semi-quantitative", page_icon="app_demo/image/Icon_chemitry.png", layout="wide")
+#st.set_page_config(page_title="Semi-quantitative", page_icon="app_demo/image/Icon_chemitry.png", layout="wide",  theme={"primaryColor": "#4CAF50"})
 st.sidebar.image("app_demo/image/logo_NCKU.jpeg", use_column_width=True)
+
 with st.sidebar:
-    selected = option_menu("Main Menu", ["1. Text Prompt", "2. Visual Prompt Engineer", "3. Visual Prompt"],
-                           icons=["blockquote-left", "transparency", "images"], menu_icon="bars", default_index=0)
+    selected = option_menu("Main Menu", ["1. Upload Data", "2. Processing", "3. Download Result"],
+                           icons=["cloud-upload-fill", "cpu-fill", "cloud-arrow-down-fill" ], menu_icon="bars", default_index=0)
 # Based on the selected option, you can display different content in your web application
 # page for select icon https://icons.getbootstrap.com/
 
-settingFooter()
-if selected == "1. Text Prompt":
-    text_prompt()
 
-elif selected == "2. Visual Prompt Engineer":
-    visual_prompt_engineer()
+st.sidebar.subheader("Please upload the Excel file", divider='rainbow')
+uploaded_file = st.sidebar.file_uploader("", type=["xlsx"], accept_multiple_files=False) 
 
-elif selected == "3. Visual Prompt":
-    visual_prompt()
+# settingFooter()
 
-    
+if selected == "1. Upload Data":
+    upload_data(uploaded_file)     
+elif selected == "2. Processing":
+    processing(uploaded_file)
+elif selected == "3. Download Result":
+    download_result(uploaded_file)
+
