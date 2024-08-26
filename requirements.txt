@@ -7,3 +7,4 @@ rpy2==3.5.1
 numpy==1.26.4
 pyper
 openpyxl
+xlsxwriter
