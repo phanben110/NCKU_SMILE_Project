@@ -8,7 +8,8 @@ import seaborn as sns
 import pandas as pd
 from app_demo.src.p1_upload_data import *
 from app_demo.src.p2_processing import *
-from app_demo.src.p3_download_result import *
+# from app_demo.src.p3_download_result_rpy2 import *
+from app_demo.src.p3_download_result_pyper import *
 from app_demo.src.footer import settingFooter
 import warnings
 warnings.filterwarnings("ignore")
