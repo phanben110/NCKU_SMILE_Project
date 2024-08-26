@@ -4,4 +4,4 @@ seaborn
 streamlit
 streamlit_option_menu
 rpy2==3.5.1
-
+numpy==1.26.4
