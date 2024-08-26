@@ -29,7 +29,7 @@ with st.sidebar:
 
 
 st.sidebar.subheader("Please upload the Excel file", divider='rainbow')
-uploaded_file = st.sidebar.file_uploader("", type=["xlsx"], accept_multiple_files=False) 
+uploaded_file = st.sidebar.file_uploader(label=" ", type=["xlsx"], accept_multiple_files=False) 
 
 # settingFooter()
 

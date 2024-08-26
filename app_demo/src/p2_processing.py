@@ -1,29 +1,56 @@
 import streamlit as st
 import os
-import requests
+import logging
 import numpy as np
 import pandas as pd
 import warnings
+from datetime import datetime
+
 warnings.filterwarnings("ignore")
 
-def processing(file_name=None): 
+# Configure logging
+logging.basicConfig(
+    filename='runtime.log',  # Tên file log
+    level=logging.INFO,         # Mức độ logging
+    format='%(asctime)s - %(message)s',  # Định dạng log
+    datefmt='%Y-%m-%d %H:%M:%S'  # Định dạng thời gian
+)
+
+# Function to log access information
+def log_access(message):
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    logging.info(f"{current_time} - P2. Processing - {message}")
+    print(f"{current_time} - P2. Processing - {message}")
+
+# Function to process the uploaded Excel file
+def processing(file_name=None):
     st.image("app_demo/image/2_processing.png")
-    # Read the Excel file into a DataFrame
+    
     if file_name is not None:
+        try:
+            # Read the Excel file into a DataFrame
+            df = pd.read_excel(file_name)
+            
+            if df.empty:
+                message = "Failed: The uploaded file is empty."
+                st.warning(message)
+                log_access(message)
+                return
+            
+            # Filter and display the data
+            filtered_df = df[['Title', 'Area', 'SMILES']].dropna()
+            st.subheader("Filtered Data", divider='rainbow')
+            st.dataframe(filtered_df, height=500, width=1500)
 
-        df = pd.read_excel(file_name)
-        # Check if the DataFrame is empty
-        if df.empty:
-            st.warning("The uploaded file is empty. Please upload a file with data.")
-            return
-
-        filtered_df = df[['Title', 'Area', 'SMILES']] 
-        filtered_df.head()
-        filtered_df = filtered_df.dropna() 
-        st.subheader(" Filtered Data", divider='rainbow')
-        st.dataframe(filtered_df, height=500, width=1500)
-
-
+            message = "Success: Data processed and filtered successfully."
+            log_access(message)
+        
+        except Exception as e:
+            message = f"Failed: Error during data processing. Error: {e}"
+            st.error(message, icon="❌")
+            log_access(message)
+    
     elif file_name is None:
-        st.error("Please upload a data file to start processing.", icon="❌")
-
+        message = "Failed: No file uploaded for processing."
+        st.error(message, icon="❌")
+        log_access(message)
