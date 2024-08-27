@@ -168,8 +168,8 @@ def download_result(file_names=None, sample_count=None):
                 mean = list(experiment_df['Mean']) 
                 target_smiles = config.get('target_smiles')
                 similarity_df_i = calculate_similarity_df(filtered_df,target_smiles)
-                print('IR_AREA_: ', IS_area)
-                print(mean)
+                # print('IR_AREA_: ', IS_area)
+                # print(mean)
 
                 semi_quan_i = summary_1(similarity_df_i, filtered_df, file_name.name, IS_area, mean)
 
